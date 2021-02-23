@@ -1,0 +1,113 @@
+{
+    "$type": "0|Game.Entities.StarSystemImage, Assembly-CSharp",
+    "EntitiesRoot": {
+        "$id": 0,
+        "$type": "1|Game.TreeNode`1[[Game.Entities.StarSystemEntity, Assembly-CSharp]], Assembly-CSharp",
+        "Childs": {
+            "$id": 1,
+            "$type": "2|System.Collections.Generic.LinkedList`1[[Game.TreeNode`1[[Game.Entities.StarSystemEntity, Assembly-CSharp]], Assembly-CSharp]], System",
+            "$rlength": 1,
+            "$rcontent": [
+                {
+                    "$id": 2,
+                    "$type": 1,
+                    "Childs": {
+                        "$id": 3,
+                        "$type": 2,
+                        "$rlength": 1,
+                        "$rcontent": [
+                            {
+                                "$id": 4,
+                                "$type": 1,
+                                "Childs": {
+                                    "$id": 5,
+                                    "$type": 2,
+                                    "$rlength": 0,
+                                    "$rcontent": [
+                                    ]
+                                },
+                                "Value": {
+                                    "$id": 6,
+                                    "$type": "3|Game.Entities.Planet, Assembly-CSharp",
+                                    "Position": {
+                                        "$type": "4|Game.Entities.InSystemPosition, Assembly-CSharp",
+                                        "Direction": {
+                                            "$type": "5|UnityEngine.Vector3, UnityEngine.CoreModule",
+                                            1,
+                                            0,
+                                            0
+                                        },
+                                        "Distance": 10,
+                                        "SelfRotationSpeed": 2,
+                                        "Clockwise": false
+                                    },
+                                    "Relation": {
+                                        "$type": "6|Game.Entities.InSystemRelation, Assembly-CSharp",
+                                        "Id": 2,
+                                        "OrbitId": 1,
+                                        "OrbitSpeed": 3
+                                    },
+                                    "Radius": 0.5
+                                }
+                            }
+                        ]
+                    },
+                    "Value": {
+                        "$id": 7,
+                        "$type": "7|Game.Entities.Star, Assembly-CSharp",
+                        "Position": {
+                            "$type": 4,
+                            "Direction": {
+                                "$type": 5,
+                                0,
+                                0,
+                                0
+                            },
+                            "Distance": 0,
+                            "SelfRotationSpeed": 1,
+                            "Clockwise": false
+                        },
+                        "Relation": {
+                            "$type": 6,
+                            "Id": 1,
+                            "OrbitId": 0,
+                            "OrbitSpeed": 0
+                        },
+                        "Radius": 1
+                    }
+                }
+            ]
+        },
+        "Value": {
+            "$id": 8,
+            "$type": "8|Game.Entities.StarSystemToStarSystemEntityAdapter, Assembly-CSharp",
+            "Position": {
+                "$type": 4,
+                "Direction": {
+                    "$type": 5,
+                    0,
+                    0,
+                    0
+                },
+                "Distance": 0,
+                "SelfRotationSpeed": 0,
+                "Clockwise": false
+            },
+            "Relation": {
+                "$type": 6,
+                "Id": 0,
+                "OrbitId": -1,
+                "OrbitSpeed": 0
+            },
+            "Radius": 0,
+            "StarSystem": {
+                "$id": 9,
+                "$type": "9|Game.Entities.StarSystem, Assembly-CSharp",
+                "Info": {
+                    "$type": "10|Game.Entities.InGalaxyRelation, Assembly-CSharp",
+                    "Id": 0
+                }
+            }
+        }
+    }
+}
