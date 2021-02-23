@@ -22,7 +22,7 @@ namespace Game.Entities
         private readonly List<Star> _stars;
         private readonly List<Planet> _planets;
 
-        public StarSystemEntity[] AllEntities => _stars.WithArray<Star, Planet, StarSystemEntity>(_planets);
+        public SystemEntity[] AllEntities => _stars.WithArray<Star, Planet, SystemEntity>(_planets);
 
         public StarSystem(InGalaxyRelation info)
         {
@@ -45,12 +45,12 @@ namespace Game.Entities
         {
             var entities = AllEntities;
 
-            var systemAdapter = new StarSystemToStarSystemEntityAdapter(new InSystemPosition(),
+            var systemAdapter = new SystemToSystemEntityAdapter(new InSystemPosition(),
                 new InSystemRelation(0, 0, 0), 0, this);
             
-            var root = new TreeNode<StarSystemEntity>(null, systemAdapter);
+            var root = new TreeNode<SystemEntity>(null, systemAdapter);
             
-            var stack = new Stack<TreeNode<StarSystemEntity>>();
+            var stack = new Stack<TreeNode<SystemEntity>>();
             stack.Push(root);
             
             while (stack.Count > 0)
@@ -63,7 +63,7 @@ namespace Game.Entities
                 {
                     if (root.Find(x => x.Value == entity, root) == null)
                     {
-                        var entityNode = new TreeNode<StarSystemEntity>(next, entity);
+                        var entityNode = new TreeNode<SystemEntity>(next, entity);
                         next.Add(entityNode);
                         stack.Push(entityNode);
                     }
@@ -73,7 +73,7 @@ namespace Game.Entities
             return new StarSystemImage(root);
         }
 
-        public IEnumerable<StarSystemEntity> FindOrbitDependentEntities(StarSystemEntity[] entities,
+        public IEnumerable<SystemEntity> FindOrbitDependentEntities(SystemEntity[] entities,
             in InSystemRelation relation)
         {
             var id = relation.Id;
@@ -81,13 +81,13 @@ namespace Game.Entities
         }
     }
 
-    public class StarSystemToStarSystemEntityAdapter: StarSystemEntity
+    public class SystemToSystemEntityAdapter: SystemEntity
     {
         public readonly StarSystem StarSystem;
 
-        public StarSystemToStarSystemEntityAdapter(InSystemPosition position, InSystemRelation relation, float radius,
+        public SystemToSystemEntityAdapter(InSystemPosition position, InSystemRelation relation, float size,
             StarSystem starSystem)
-            : base(position, relation, radius)
+            : base(position, relation, size)
         {
             StarSystem = starSystem;
         }

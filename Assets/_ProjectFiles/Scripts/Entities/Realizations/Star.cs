@@ -1,9 +1,9 @@
 ﻿namespace Game.Entities
 {
-    public class Star: StarSystemEntity
+    public class Star: SystemEntity
     {
-        public Star(InSystemPosition position, InSystemRelation relation, float radius)
-            : base(position, relation, radius)
+        public Star(InSystemPosition position, InSystemRelation relation, float size)
+            : base(position, relation, size)
         {
         }
     }

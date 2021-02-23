@@ -2,10 +2,10 @@
     "$type": "0|Game.Entities.StarSystemImage, Assembly-CSharp",
     "EntitiesRoot": {
         "$id": 0,
-        "$type": "1|Game.TreeNode`1[[Game.Entities.StarSystemEntity, Assembly-CSharp]], Assembly-CSharp",
+        "$type": "1|Game.TreeNode`1[[Game.Entities.SystemEntity, Assembly-CSharp]], Assembly-CSharp",
         "Childs": {
             "$id": 1,
-            "$type": "2|System.Collections.Generic.LinkedList`1[[Game.TreeNode`1[[Game.Entities.StarSystemEntity, Assembly-CSharp]], Assembly-CSharp]], System",
+            "$type": "2|System.Collections.Generic.LinkedList`1[[Game.TreeNode`1[[Game.Entities.SystemEntity, Assembly-CSharp]], Assembly-CSharp]], System",
             "$rlength": 1,
             "$rcontent": [
                 {
@@ -47,7 +47,7 @@
                                         "OrbitId": 1,
                                         "OrbitSpeed": 3
                                     },
-                                    "Radius": 0.5
+                                    "Size": 0.5
                                 }
                             }
                         ]
@@ -73,14 +73,14 @@
                             "OrbitId": 0,
                             "OrbitSpeed": 0
                         },
-                        "Radius": 1
+                        "Size": 1
                     }
                 }
             ]
         },
         "Value": {
             "$id": 8,
-            "$type": "8|Game.Entities.StarSystemToStarSystemEntityAdapter, Assembly-CSharp",
+            "$type": "8|Game.Entities.SystemToSystemEntityAdapter, Assembly-CSharp",
             "Position": {
                 "$type": 4,
                 "Direction": {
@@ -99,7 +99,7 @@
                 "OrbitId": -1,
                 "OrbitSpeed": 0
             },
-            "Radius": 0,
+            "Size": 0,
             "StarSystem": {
                 "$id": 9,
                 "$type": "9|Game.Entities.StarSystem, Assembly-CSharp",

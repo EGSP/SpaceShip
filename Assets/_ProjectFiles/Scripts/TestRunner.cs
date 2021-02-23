@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Egsp.Extensions.Linq;
 using Game.Entities;
+using Game.Entities.Factories;
 using Sirenix.Serialization;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class TestRunner : MonoBehaviour
 {
@@ -17,5 +21,10 @@ public class TestRunner : MonoBehaviour
         var imageJson = SerializationUtility.SerializeValue(image, DataFormat.JSON);
         File.WriteAllBytes(Application.dataPath+"//JsonTest.txt",imageJson);
         var newImage = SerializationUtility.DeserializeValue<StarSystemImage>(imageJson, DataFormat.JSON).ResolveRelations();
+
+        // var handle = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Planet.prefab");
+        // handle.Completed += (handlex) => Instantiate(handle.Result);
+        
+        PlanetFactory.CreateMono(starSystem.AllEntities.FindType<Planet>(), null);
     }
 }

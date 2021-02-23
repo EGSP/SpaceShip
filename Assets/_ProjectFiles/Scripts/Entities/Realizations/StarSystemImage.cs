@@ -2,9 +2,9 @@
 namespace Game.Entities
 {
     public struct StarSystemImage{
-        public readonly TreeNode<StarSystemEntity> EntitiesRoot;
+        public readonly TreeNode<SystemEntity> EntitiesRoot;
 
-        public StarSystemImage(TreeNode<StarSystemEntity> entitiesRoot)
+        public StarSystemImage(TreeNode<SystemEntity> entitiesRoot)
         {
             EntitiesRoot = entitiesRoot;
         }
@@ -12,7 +12,7 @@ namespace Game.Entities
         
         public StarSystemImage ResolveRelations()
         {
-            TreeNode<StarSystemEntity>.ResolveRelations(EntitiesRoot);
+            TreeNode<SystemEntity>.ResolveRelations(EntitiesRoot);
             return this;
         }
     }

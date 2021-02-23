@@ -39,18 +39,18 @@ namespace Game.Entities
         }
     }
     
-    public abstract class StarSystemEntity: SpaceEntity
+    public abstract class SystemEntity: SpaceEntity
     {
         public readonly InSystemPosition Position;
         public readonly InSystemRelation Relation;
 
-        public readonly float Radius;
+        public readonly float Size;
 
-        protected StarSystemEntity(InSystemPosition position, InSystemRelation relation, float radius)
+        protected SystemEntity(InSystemPosition position, InSystemRelation relation, float size)
         {
             Position = position;
             Relation = relation;
-            Radius = radius;
+            Size = size;
         }
     }
 }

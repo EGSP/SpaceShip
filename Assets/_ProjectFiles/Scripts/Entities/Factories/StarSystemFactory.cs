@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.Entities;
+﻿using Game.Entities;
 using UnityEngine;
 
 public static class StarSystemFactory
