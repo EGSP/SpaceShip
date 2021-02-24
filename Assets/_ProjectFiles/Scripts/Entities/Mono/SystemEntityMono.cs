@@ -1,11 +1,10 @@
-﻿using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Game.Entities
 {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
-    public abstract class SystemEntityMono : SerializedMonoBehaviour
+    public abstract class SystemEntityMono<TEntity> : EntityMono<TEntity> where TEntity : SystemEntity
     {
         public MeshFilter MeshFilter { get; protected set; }
         public MeshRenderer MeshRenderer{ get; protected set; }

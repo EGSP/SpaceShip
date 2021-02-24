@@ -3,11 +3,7 @@ using Sirenix.OdinInspector;
 
 namespace Game.Entities
 {
-    public class StarSystemMono : SerializedMonoBehaviour
+    public class StarSystemMono : EntityMono<StarSystem>
     {
-        public void Accept(StarSystem systemEntity)
-        {
-            
-        }
     }
 }

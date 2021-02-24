@@ -2,10 +2,7 @@
 
 namespace Game.Entities
 {
-    public class PlanetMono : SystemEntityMono
+    public class PlanetMono : SystemEntityMono<Planet>
     {
-        public void Accept(Planet planet)
-        {
-        }
     }
 }

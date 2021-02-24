@@ -1,10 +1,6 @@
 ﻿namespace Game.Entities
 {
-    public class StarMono : SystemEntityMono
+    public class StarMono : SystemEntityMono<Star>
     {
-        public void Accept(Star star)
-        {
-            
-        }
     }
 }

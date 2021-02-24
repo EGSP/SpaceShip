@@ -16,15 +16,17 @@ public class TestRunner : MonoBehaviour
     {
         var starSystem = StarSystemFactory.CreateRandomStarSystem();
         var image = starSystem.TakeImage();
-        // var imageJson = JsonConvert.SerializeObject(image);
-        // var newImage = JsonConvert.DeserializeObject<StarSystemImage>(imageJson);
-        var imageJson = SerializationUtility.SerializeValue(image, DataFormat.JSON);
-        File.WriteAllBytes(Application.dataPath+"//JsonTest.txt",imageJson);
-        var newImage = SerializationUtility.DeserializeValue<StarSystemImage>(imageJson, DataFormat.JSON).ResolveRelations();
-
-        // var handle = Addressables.LoadAssetAsync<GameObject>("Assets/Prefabs/Planet.prefab");
-        // handle.Completed += (handlex) => Instantiate(handle.Result);
         
-        PlanetFactory.CreateMono(starSystem.AllEntities.FindType<Planet>(), null);
+        var imageJson = StarSystemImage.GetJson(image);
+        File.WriteAllBytes(Application.dataPath+"//JsonTest.txt",imageJson);
+        var newImage = StarSystemImage.GetImage(imageJson);
+        
+        MonoFactories.PlanetMonoFactory
+            .InstancePrefab(starSystem.AllEntities.FindType<Planet>(), OnPlanetMonoCreated);
+    }
+
+    private void OnPlanetMonoCreated(PlanetMono planetMono)
+    {
+        Debug.Log("Planet created.");
     }
 }
