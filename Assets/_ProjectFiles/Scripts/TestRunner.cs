@@ -22,11 +22,28 @@ public class TestRunner : MonoBehaviour
         var newImage = StarSystemImage.GetImage(imageJson);
         
         MonoFactories.PlanetMonoFactory
-            .InstancePrefab(starSystem.AllEntities.FindType<Planet>(), OnPlanetMonoCreated);
+            .InstancePrefab(new Planet(0.1f,0), OnPlanetMonoCreated);
     }
 
     private void OnPlanetMonoCreated(PlanetMono planetMono)
     {
-        Debug.Log("Planet created.");
+        var system = StarSystemFactory.GenerateRandomSystem();
+
+        var queue = new Queue<StarSystemObject>();
+        queue.Enqueue(system);
+
+        while (queue.Count > 0)
+        {
+            var next = queue.Dequeue();
+            
+            var visual = MonoFactories.PlanetMonoFactory
+                .InstancePrefabImmediately(new Planet(next.Size+0.1f,0));
+            visual.transform.position = new Vector3(next.GetPosition(),0);
+
+            foreach (var obj in next.Line)
+            {
+                queue.Enqueue(obj);
+            }
+        }
     }
 }

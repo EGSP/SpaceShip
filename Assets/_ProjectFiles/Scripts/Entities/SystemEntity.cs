@@ -6,27 +6,20 @@ namespace Game.Entities
     {
         public readonly Vector3 Direction;
         public readonly float Distance;
-        
-        public readonly float SelfRotationSpeed;
-        public readonly bool Clockwise;
 
-        public InSystemPosition(Vector3 direction, float distance, float selfRotationSpeed, bool clockwise = false)
+        public InSystemPosition(Vector3 direction, float distance)
         {
             Direction = direction;
             Distance = distance;
-            SelfRotationSpeed = selfRotationSpeed;
-            Clockwise = clockwise;
         }
     }
 
     public readonly struct InSystemRelation
     {
         public readonly int Id;
-        
         public readonly int OrbitId;
-        public readonly float OrbitSpeed;
 
-        public InSystemRelation(int id, int orbitId, float orbitSpeed)
+        public InSystemRelation(int id, int orbitId)
         {
             Id = id;
             if (orbitId == id)
@@ -35,22 +28,27 @@ namespace Game.Entities
             }
 
             OrbitId = orbitId;
-            OrbitSpeed = orbitSpeed;
         }
     }
     
     public abstract class SystemEntity: SpaceEntity
     {
-        public readonly InSystemPosition Position;
-        public readonly InSystemRelation Relation;
+        public InSystemPosition Position;
+        public InSystemRelation Relation;
 
         public readonly float Size;
+        public readonly float Rotation;
+        public readonly float OrbitRotation;
+        
+        public readonly bool Clockwise;
 
-        protected SystemEntity(InSystemPosition position, InSystemRelation relation, float size)
+        protected SystemEntity(float size, float rotation,
+            float orbitRotation=0, bool clockwise = false)
         {
-            Position = position;
-            Relation = relation;
             Size = size;
+            Rotation = rotation;
+            OrbitRotation = orbitRotation;
+            Clockwise = clockwise;
         }
     }
 }

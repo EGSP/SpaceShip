@@ -45,8 +45,7 @@ namespace Game.Entities
         {
             var entities = AllEntities;
 
-            var systemAdapter = new SystemToSystemEntityAdapter(new InSystemPosition(),
-                new InSystemRelation(0, 0, 0), 0, this);
+            var systemAdapter = new SystemToSystemEntityAdapter(this,0,0);
             
             var root = new TreeNode<SystemEntity>(null, systemAdapter);
             
@@ -85,9 +84,9 @@ namespace Game.Entities
     {
         public readonly StarSystem StarSystem;
 
-        public SystemToSystemEntityAdapter(InSystemPosition position, InSystemRelation relation, float size,
-            StarSystem starSystem)
-            : base(position, relation, size)
+        public SystemToSystemEntityAdapter(StarSystem starSystem,float size, float rotation, float orbitRotation = 0,
+            bool clockwise = false)
+            : base(size, rotation, orbitRotation, clockwise)
         {
             StarSystem = starSystem;
         }

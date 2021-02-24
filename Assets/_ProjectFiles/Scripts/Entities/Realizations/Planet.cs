@@ -2,8 +2,8 @@
 {
     public class Planet: SystemEntity
     {
-        public Planet(InSystemPosition position, InSystemRelation relation, float size)
-            : base(position, relation, size)
+        public Planet(float size, float rotation, float orbitRotation = 0, bool clockwise = false)
+            : base(size, rotation, orbitRotation, clockwise)
         {
         }
     }

@@ -32,6 +32,11 @@ namespace Game.Entities.Factories
         
         protected void InstancePrefabInternal(TSystemEntity rawObject, Action<TSystemEntityMono> callback)
         {
+            callback?.Invoke(InstancePrefabImmediately(rawObject));
+        }
+
+        public TSystemEntityMono InstancePrefabImmediately(TSystemEntity rawObject)
+        {
             var mesh = CreateMesh(rawObject);
             SetColor(mesh, Colorset.Random());
             var inst = UnityEngine.Object.Instantiate(Prefab).GetComponent<TSystemEntityMono>();
@@ -40,8 +45,7 @@ namespace Game.Entities.Factories
             inst.MeshRenderer.material = GetMaterial();
             
             inst.Accept(rawObject);
-
-            callback?.Invoke(inst);
+            return inst;
         }
         
         protected virtual Mesh CreateMesh(TSystemEntity systemEntity)
