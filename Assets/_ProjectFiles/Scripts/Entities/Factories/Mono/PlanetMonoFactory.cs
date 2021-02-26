@@ -11,5 +11,10 @@ namespace Game.Entities.Factories
     public sealed class PlanetMonoFactory : SystemEntityMonoFactory<Planet, PlanetMono>
     {
         protected override string PathToPrefab => "Assets/Prefabs/Planet.prefab";
+        
+        public override void AcceptRawObject(PlanetMono systemEntityMono, Planet systemEntity)
+        {
+            systemEntityMono.Accept(systemEntity);
+        }
     }
 }

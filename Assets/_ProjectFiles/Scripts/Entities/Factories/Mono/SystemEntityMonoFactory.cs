@@ -8,7 +8,7 @@ namespace Game.Entities.Factories
     public abstract class SystemEntityMonoFactory<TSystemEntity, TSystemEntityMono> : 
         EntityMonoFactory<TSystemEntity, TSystemEntityMono>
         where TSystemEntity : SystemEntity
-        where TSystemEntityMono : SystemEntityMono<TSystemEntity>
+        where TSystemEntityMono : SystemEntityMono
     {
         public Color[] Colorset { get; set; } = Array.Empty<Color>(); 
         
@@ -35,19 +35,21 @@ namespace Game.Entities.Factories
             callback?.Invoke(InstancePrefabImmediately(rawObject));
         }
 
-        public TSystemEntityMono InstancePrefabImmediately(TSystemEntity rawObject)
+        public TSystemEntityMono InstancePrefabImmediately(TSystemEntity systemEntity)
         {
-            var mesh = CreateMesh(rawObject);
-            SetColor(mesh, Colorset.Random());
+            var mesh = CreateMesh(systemEntity);
+            SetColor(mesh, GetColor(systemEntity));
             var inst = UnityEngine.Object.Instantiate(Prefab).GetComponent<TSystemEntityMono>();
             
             inst.MeshFilter.mesh = mesh;
             inst.MeshRenderer.material = GetMaterial();
-            
-            inst.Accept(rawObject);
+
+            AcceptRawObject(inst, systemEntity);
             return inst;
         }
         
+        public abstract void AcceptRawObject(TSystemEntityMono systemEntityMono, TSystemEntity systemEntity);
+
         protected virtual Mesh CreateMesh(TSystemEntity systemEntity)
         {
             var mesh = MeshUtils.Diamond(systemEntity.Size, systemEntity.Size);

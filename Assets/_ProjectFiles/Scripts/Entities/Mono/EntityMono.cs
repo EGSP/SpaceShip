@@ -2,11 +2,7 @@
 
 namespace Game.Entities
 {
-    public abstract class EntityMono<TEntity> : SerializedMonoBehaviour
-        where TEntity : Entity
+    public abstract class EntityMono : SerializedMonoBehaviour
     {
-        public virtual void Accept(TEntity rawObject)
-        {
-        }
     }
 }

@@ -4,12 +4,12 @@ namespace Game.Entities
 {
     public readonly struct InSystemPosition
     {
-        public readonly Vector3 Direction;
         public readonly float Distance;
 
-        public InSystemPosition(Vector3 direction, float distance)
+        public Vector3 MultipliedDirection => Vector3.right * Distance;
+
+        public InSystemPosition(float distance)
         {
-            Direction = direction;
             Distance = distance;
         }
     }

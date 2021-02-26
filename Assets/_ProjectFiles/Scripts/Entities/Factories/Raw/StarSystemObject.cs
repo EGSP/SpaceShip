@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Egsp.Extensions.Collections;
+using Egsp.Extensions.Primitives;
 using JetBrains.Annotations;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Game.Entities.Factories
 
     public class StarSystemObject
     {
+        public static StarSystemObject NewInvalid => new StarSystemObject(-1, null);
+        
         public readonly int Id;
         
         [CanBeNull] public readonly SystemEntity Entity;
@@ -36,7 +39,11 @@ namespace Game.Entities.Factories
         /// Область - это собственный размер + длина основной линии спутников.
         /// </summary>
         [OdinSerialize] public float Area { get; private set; }
-        [OdinSerialize] public float DistanceFromParent { get; set; }
+        [OdinSerialize] public float DistanceFromPrevious { get; private set; }
+        
+        [OdinSerialize] public float Position { get; private set; }
+
+        public bool IsValid => Id != -1;
 
         
 
@@ -61,22 +68,111 @@ namespace Game.Entities.Factories
             Entity.Relation = new InSystemRelation(Id, Parent?.Id ?? 0);
         }
 
+        private float RecalculateArea()
+        {
+            if (Line.Count == 0)
+            {
+                Area = this.GetSize();
+            }
+
+            Area = this.GetSize() + Line.Sum(x => x.Area + x.DistanceFromPrevious);
+            return Area;
+        }
+
+        private float RecalculateAllAreas()
+        {
+            if (Line.Count == 0)
+            {
+                Area = this.GetSize();
+            }
+            
+            Area = this.GetSize() + Line.Sum(x => RecalculateArea());
+            return Area;
+        }
+
+        public void AddChild(StarSystemObject systemObject)
+        {
+            systemObject.Parent = this;
+            systemObject.DistanceFromPrevious += systemObject.Area * 0.5f;
+            Line.AddLast(systemObject);
+            RecalculateArea();
+        }
+        
         public void JoinLine(LinkedList<StarSystemObject> line)
         {
             Line.Join(line, x => x.Parent = this);
             RecalculateArea();
         }
 
-        private void RecalculateArea()
+        public static IEnumerable<StarSystemObject> QueueTraverse(StarSystemObject root)
         {
-            Area = this.GetSize() + Line.Sum(x => x.GetDistanceWithHalfSize());
+            var queue = new Queue<StarSystemObject>();
+            queue.Enqueue(root);
+            
+            while (queue.Count > 0)
+            {
+                var next = queue.Dequeue();
+                yield return next;
+                foreach (var child in next.Line)
+                    queue.Enqueue(child);
+            } 
         }
-
-        public void AddLast(StarSystemObject systemObject)
+        
+        public static void QueueTraverse(StarSystemObject root, Action<StarSystemObject> action)
         {
-            systemObject.Parent = this;
-            Line.AddLast(systemObject);
-            RecalculateArea();
+            foreach (var systemObject in QueueTraverse(root))
+            {
+                action(systemObject);
+            } 
+        }
+        
+        public static void CalculatePositions(StarSystemObject root, ref StarSystemObject previous)
+        {
+            if (!root.IsValid)
+                return;
+            
+            // Предыдущим объектом может быть и чей-то спутник.
+            if (previous.IsValid)
+            {
+                // Считываем свою позицию
+                root.Position = previous.Position + root.DistanceFromPrevious + root.Area * 0.5f;
+                
+                // Debug.Log($"Prevpos:{previous?.Position.ToString(1)}; MyPos:{root.Position.ToString(1)};" +
+                //           $" MyHalfArea:{(root.Area*0.5f).ToString(1)}" +
+                //           $" Dist:{root.DistanceFromPrevious.ToString(1)}");
+            }
+            else
+            {
+                root.Position = 0;
+            }
+
+            if (root.Entity != null)
+                root.Entity.Position = new InSystemPosition(root.Position);
+            
+            previous = root;
+            
+
+            if (root.Line.Count == 0)
+                return;
+            
+            foreach (var child in root.Line)
+            {
+                CalculatePositions(child, ref previous);
+            }
+        }
+        
+        public static IEnumerable<SystemEntity> QueueEntityTraverse(StarSystemObject root)
+        {
+            var queue = new Queue<StarSystemObject>();
+            queue.Enqueue(root);
+            
+            while (queue.Count > 0)
+            {
+                var next = queue.Dequeue();
+                yield return next.Entity;
+                foreach (var child in next.Line)
+                    queue.Enqueue(child);
+            } 
         }
 
         public static StarSystemObject GenerateTree<TEntity>(
@@ -86,6 +182,7 @@ namespace Game.Entities.Factories
         {
             var levelFactor = properties.Factor(level);
             var entitiesCount = (int)(properties.EntitiesCount.Random * levelFactor);
+            
             while (entitiesCount > 0)
             {
                 entitiesCount--;
@@ -106,8 +203,8 @@ namespace Game.Entities.Factories
                 }
 
                 // Дистанция похожа на "чупик" (палка и круг).
-                lineChild.DistanceFromParent = distance + (lineChild.Area * 0.5f);
-                root.AddLast(lineChild);
+                lineChild.DistanceFromPrevious = distance + (lineChild.Area * 0.5f);
+                root.AddChild(lineChild);
             }
 
             return root;
@@ -125,8 +222,8 @@ namespace Game.Entities.Factories
 
             var distance = properties.Distance.Random * levelFactor;
 
-                // Дистанция похожа на "чупик" (палка и круг).
-            obj.DistanceFromParent = distance + (obj.Area * 0.5f);
+            // Дистанция похожа на "чупик" (палка и круг).
+            obj.DistanceFromPrevious = distance;
             return obj;
         }
     }
@@ -138,26 +235,24 @@ namespace Game.Entities.Factories
             return systemObject.Entity == null ? 0 : systemObject.Entity.Size;
         }
 
-        public static float GetPosition(this StarSystemObject systemObject)
-        {
-            if (systemObject.Parent == null)
-                return -1;
-
-            return systemObject.Parent.GetPosition() 
-                   + systemObject.Parent.GetSize() / 2f 
-                   + GetDistanceWithHalfAreaSize(systemObject);
-        }
-        
         public static float GetDistanceWithHalfSize(this StarSystemObject systemObject)
         {
-            return systemObject.DistanceFromParent + (systemObject.GetSize() / 2f);
+            return systemObject.DistanceFromPrevious + (systemObject.GetSize() / 2f);
         }
 
         public static float GetDistanceWithHalfAreaSize(this StarSystemObject systemObject)
         {
-            return systemObject.DistanceFromParent + (systemObject.Area / 2f);
+            return systemObject.DistanceFromPrevious + (systemObject.Area / 2f);
         }
-        
+
+        public static IEnumerable<SystemEntity> GetEntities(this StarSystemObject systemObject)
+        {
+            if (systemObject.IsValid)
+                return StarSystemObject.QueueEntityTraverse(systemObject);
+            
+            return Array.Empty<SystemEntity>();
+        }
+
         public static byte[] Serialize(this StarSystemObject systemObject, DataFormat format = DataFormat.JSON)
         {
             var json = SerializationUtility.SerializeValue(systemObject, format);
