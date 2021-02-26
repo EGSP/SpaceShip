@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Egsp.Extensions.Primitives;
 using Egsp.Utils.MeshUtilities;
 using UnityEngine;
@@ -10,8 +12,28 @@ namespace Game.Entities.Factories
         where TSystemEntity : SystemEntity
         where TSystemEntityMono : SystemEntityMono
     {
-        public Color[] Colorset { get; set; } = Array.Empty<Color>(); 
         
+        protected List<ColorFactory> ColorFactories;
+        
+        public SystemEntityMonoFactory() : base()
+        {
+            InitColorFactories();
+        }
+        
+        private void InitColorFactories()
+        {
+            ColorFactories = new List<ColorFactory>();
+            foreach (var factory in AddColorFactories())
+            {
+                ColorFactories.Add(factory);
+            }
+        }
+        
+        protected override IEnumerable<ColorFactory> AddColorFactories()
+        {
+            yield return new RandomColorFactory<SystemEntityType>();
+        }
+
         public void InstancePrefab(TSystemEntity systemEntity, Action<TSystemEntityMono> callback)
         {
             if (Prefab == null)
@@ -38,7 +60,7 @@ namespace Game.Entities.Factories
         public TSystemEntityMono InstancePrefabImmediately(TSystemEntity systemEntity)
         {
             var mesh = CreateMesh(systemEntity);
-            SetColor(mesh, GetColor(systemEntity));
+            SetColor(mesh, GetColorFor(systemEntity));
             var inst = UnityEngine.Object.Instantiate(Prefab).GetComponent<TSystemEntityMono>();
             
             inst.MeshFilter.mesh = mesh;
@@ -59,6 +81,20 @@ namespace Game.Entities.Factories
         protected virtual Material GetMaterial()
         {
             return MeshUtils.GetSpriteDefaultMaterial();
+        }
+        
+        
+        public virtual Color GetColorFor(Entity entity)
+        {
+            var entityType = entity.EntityType;
+            var factory = ColorFactories.FirstOrDefault(x => x.CheckEntityType(entityType));
+
+            if (factory != null)
+            {
+                return factory.GetColor();
+            }
+            
+            return Color.magenta;
         }
     }
 }

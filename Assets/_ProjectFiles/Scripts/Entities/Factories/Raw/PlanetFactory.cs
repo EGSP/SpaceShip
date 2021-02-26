@@ -20,9 +20,9 @@ namespace Game.Entities.Factories
         {
             _planetTypes = new List<PlanetType>()
             {
-                new SolidType.DesertType(),
-                new LiquidType.LavaType(), new LiquidType.OceanType(),
-                new GasType.GasDwarfType(), new GasType.GasGigantPlanetType()
+                new PlanetType.SolidType.DesertType(),
+                new PlanetType.LiquidType.LavaType(), new PlanetType.LiquidType.OceanType(),
+                new PlanetType.GasType.GasDwarfType(), new PlanetType.GasType.GasGigantPlanetType()
             };
 
             defaultPlanetProperties = new TreeGenerationProperties(
@@ -53,7 +53,7 @@ namespace Game.Entities.Factories
         // Создает планету без какой-либо информации.
         private Planet CreatePlanet(float size)
         {
-            var type = _planetTypes.Random();
+            var type = _planetTypes.RandomBySeed();
 
             if (type == null)
                 throw new NullReferenceException();

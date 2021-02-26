@@ -19,7 +19,8 @@ public class TestRunner : MonoBehaviour
         // var newImage = StarSystemImage.GetImage(imageJson);
 
         EntityMonoFactories.PlanetMonoFactory
-            .InstancePrefab(new Planet(new SolidType.DesertType(),0.1f,0), OnPlanetMonoCreated);
+            .InstancePrefab(new Planet(new PlanetType.SolidType.DesertType(),0.1f,0),
+                OnPlanetMonoCreated);
     }
 
     private void OnPlanetMonoCreated(PlanetMono planetMono)

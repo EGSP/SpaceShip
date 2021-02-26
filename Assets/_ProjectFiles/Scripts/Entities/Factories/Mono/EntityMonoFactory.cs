@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Egsp.Extensions.Linq;
 using Egsp.Extensions.Primitives;
+using Game.Entities;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -27,6 +30,8 @@ namespace Game.Entities.Factories
             Handle.Completed += (handle) => Prefab = handle.Result;
         }
 
+        protected abstract IEnumerable<ColorFactory> AddColorFactories();
+
         public void SetColor(Mesh mesh, Color color)
         {
             var verticies = mesh.vertexCount;
@@ -38,30 +43,6 @@ namespace Game.Entities.Factories
             }
 
             mesh.colors = colors;
-        }
-        
-        public virtual Color GetColor(TEntity systemEntity) => ColorExtensions.Random();
-    }
-
-    public abstract class ColorFactory
-    {
-        protected abstract Type EntityType { get; }
-        
-        protected IEnumerable<Color> Colorset = Array.Empty<Color>();
-        
-        protected ColorFactory()
-        {
-            
-        }
-    }
-    
-    public class ColorFactory<TEntity> : ColorFactory
-    {
-        protected override Type EntityType => typeof(TEntity);
-
-        public ColorFactory(IEnumerable<Color> colorset)
-        {
-            Colorset = colorset;
         }
     }
 }

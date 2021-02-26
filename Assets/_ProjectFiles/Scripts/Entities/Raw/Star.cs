@@ -6,5 +6,7 @@
             : base(size, rotation, orbitRotation, clockwise)
         {
         }
+
+        public override EntityType EntityType { get; }
     }
 }

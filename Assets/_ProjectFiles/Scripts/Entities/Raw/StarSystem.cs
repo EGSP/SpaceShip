@@ -44,6 +44,8 @@ namespace Game.Entities
             var id = relation.Id;
             return entities.Where(x => x.Relation.OrbitId == id);
         }
+
+        public override EntityType EntityType { get; }
     }
 
     // public class SystemToSystemEntityAdapter: SystemEntity

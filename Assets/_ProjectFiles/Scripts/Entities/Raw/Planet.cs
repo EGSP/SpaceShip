@@ -7,11 +7,13 @@ namespace Game.Entities
     {
         [NotNull] public readonly PlanetType Type;
         
+        public override EntityType EntityType => Type;
+        
         public Planet(PlanetType type, float size, float rotation, float orbitRotation = 0, bool clockwise = false)
             : base(size, rotation, orbitRotation, clockwise)
         {
             if (type == null)
-                type = new SolidType.DesertType();
+                type = new PlanetType.SolidType.DesertType();
             
             Type = type;
         }
@@ -20,35 +22,23 @@ namespace Game.Entities
 
 namespace Game.Entities.Planets
 {
-    public abstract class PlanetType
+    public abstract class PlanetType : EntityType
     {
-        public override bool Equals(object obj)
+        public abstract class GasType : PlanetType
         {
-            if (obj == null)
-                return false;
-
-            var type = obj as PlanetType;
-            if (type == null)
-                return false;
-
-            return this.GetType() == type.GetType();
+            public class GasDwarfType : GasType{}
+            public class GasGigantPlanetType : GasType{}
         }
-    }
 
-    public abstract class GasType : PlanetType
-    {
-        public class GasDwarfType : GasType{}
-        public class GasGigantPlanetType : GasType{}
-    }
+        public abstract class SolidType : PlanetType
+        {
+            public class DesertType : SolidType{}
+        }
 
-    public abstract class SolidType : PlanetType
-    {
-        public class DesertType : SolidType{}
-    }
-
-    public abstract class LiquidType : PlanetType
-    {
-        public class OceanType : LiquidType{}
-        public class LavaType : LiquidType{}
+        public abstract class LiquidType : PlanetType
+        {
+            public class OceanType : LiquidType{}
+            public class LavaType : LiquidType{}
+        }
     }
 }
