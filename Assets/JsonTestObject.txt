@@ -1,0 +1,120 @@
+{
+    "$id": 0,
+    "$type": "0|Game.Entities.Factories.StarSystemObject, Assembly-CSharp",
+    "Line": {
+        "$id": 1,
+        "$type": "1|System.Collections.Generic.LinkedList`1[[Game.Entities.Factories.StarSystemObject, Assembly-CSharp]], System",
+        "$rlength": 1,
+        "$rcontent": [
+            {
+                "$id": 2,
+                "$type": 0,
+                "Line": {
+                    "$id": 3,
+                    "$type": 1,
+                    "$rlength": 1,
+                    "$rcontent": [
+                        {
+                            "$id": 4,
+                            "$type": 0,
+                            "Line": {
+                                "$id": 5,
+                                "$type": 1,
+                                "$rlength": 0,
+                                "$rcontent": [
+                                ]
+                            },
+                            "Area": 0.604672,
+                            "DistanceFromParent": 1.802336,
+                            "Id": 3,
+                            "Entity": {
+                                "$id": 6,
+                                "$type": "2|Game.Entities.Planet, Assembly-CSharp",
+                                "Position": {
+                                    "$type": "3|Game.Entities.InSystemPosition, Assembly-CSharp",
+                                    "Direction": {
+                                        "$type": "4|UnityEngine.Vector3, UnityEngine.CoreModule",
+                                        0,
+                                        0,
+                                        0
+                                    },
+                                    "Distance": 0
+                                },
+                                "Relation": {
+                                    "$type": "5|Game.Entities.InSystemRelation, Assembly-CSharp",
+                                    "Id": 3,
+                                    "OrbitId": 2
+                                },
+                                "Size": 0.604672,
+                                "Rotation": 1,
+                                "OrbitRotation": 0,
+                                "Clockwise": false,
+                                "Type": {
+                                    "$id": 7,
+                                    "$type": "6|Game.Entities.Planets.LiquidType+LavaType, Assembly-CSharp"
+                                }
+                            },
+                            "_parent": $iref:2
+                        }
+                    ]
+                },
+                "Area": 2.74539256,
+                "DistanceFromParent": 3.61765718,
+                "Id": 2,
+                "Entity": {
+                    "$id": 8,
+                    "$type": 2,
+                    "Position": {
+                        "$type": 3,
+                        "Direction": {
+                            "$type": 4,
+                            0,
+                            0,
+                            0
+                        },
+                        "Distance": 0
+                    },
+                    "Relation": {
+                        "$type": 5,
+                        "Id": 2,
+                        "OrbitId": 1
+                    },
+                    "Size": 0.640720665,
+                    "Rotation": 1,
+                    "OrbitRotation": 0,
+                    "Clockwise": false,
+                    "Type": $iref:7
+                },
+                "_parent": $iref:0
+            }
+        ]
+    },
+    "Area": 7.07784176,
+    "DistanceFromParent": 7.17602444,
+    "Id": 1,
+    "Entity": {
+        "$id": 9,
+        "$type": 2,
+        "Position": {
+            "$type": 3,
+            "Direction": {
+                "$type": 4,
+                0,
+                0,
+                0
+            },
+            "Distance": 0
+        },
+        "Relation": {
+            "$type": 5,
+            "Id": 1,
+            "OrbitId": 0
+        },
+        "Size": 3.13982439,
+        "Rotation": 1,
+        "OrbitRotation": 0,
+        "Clockwise": false,
+        "Type": $iref:7
+    },
+    "_parent": null
+}
