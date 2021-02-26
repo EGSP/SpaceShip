@@ -32,10 +32,9 @@ namespace Game.Entities
             RootSystemObject = rootSystemObject;
         }
 
-        public IEnumerable<SystemEntity> GetEntities()
-        {
-            return RootSystemObject.GetEntities();
-        }
+        public IEnumerable<SystemEntity> GetEntities() => RootSystemObject.GetEntities();
+
+        public IEnumerable<StarSystemObject> GetObjects() => RootSystemObject.GetObjects();
 
         [Obsolete]
         public IEnumerable<SystemEntity> FindOrbitDependentEntities(IEnumerable<SystemEntity> entities,

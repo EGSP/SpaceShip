@@ -28,6 +28,6 @@ public class TestRunner : MonoBehaviour
         var id = 0;
         var starSystem = StarSystemFactory.CreateRandomStarSystem(ref id);
 
-        var monoStarSystem = StarSystemMonoFactory.CreateFrom(starSystem);
+        var monoStarSystem = StarSystemMonoFactory.CreateFromRaw(starSystem);
     }
 }

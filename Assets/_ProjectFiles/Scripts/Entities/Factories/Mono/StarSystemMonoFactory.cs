@@ -17,32 +17,43 @@ namespace Game.Entities.Factories
                 entity => EntityMonoFactories.PlanetMonoFactory.InstancePrefabImmediately(entity as Planet));
         }
 
-        public static StarSystemMono CreateFrom(StarSystem starSystem)
+        public static StarSystemMono CreateFromRaw(StarSystem starSystem)
         {
             var rootObj = new GameObject($"Star system: {starSystem.GalaxyRelation.Id}");
             var systemMono = rootObj.AddComponent<StarSystemMono>();
 
             systemMono.Accept(starSystem);
 
-            var entities = starSystem.GetEntities();
+            var entities = starSystem.GetObjects();
+            var starSystemObjects = entities.ToArray();
+            
+            var monoEntities = CreateMonos(rootObj.transform, starSystemObjects);
+            var monoEntitiesList = monoEntities.ToList();
+            
+            for (var i = 0; i < starSystemObjects.Length; i++)
+            {
+                var op = starSystemObjects[i].NotifyWaitingMonos();
+                if (op.NotOk)
+                    Debug.Log($"{op.ErrorMessage}");
+            }
 
-            var monoEntities = CreateMonos(rootObj.transform,entities);
-
-            systemMono.MonoEntities = monoEntities.ToList();
+            systemMono.MonoEntities = monoEntitiesList;
             return systemMono;
         }
 
-        private static IEnumerable<SystemEntityMono> CreateMonos(Transform root,IEnumerable<SystemEntity> rawEntities)
+        private static IEnumerable<SystemEntityMono> CreateMonos(Transform root, StarSystemObject[] objects)
         {
-            foreach (var rawEntity in rawEntities)
+            for (var index = 0; index < objects.Length; index++)
             {
-                var mono = RawToMono(rawEntity);
+                var obj = objects[index];
+                var mono = RawToMono(obj.Entity);
 
                 if (mono.Ok)
                 {
                     var result = mono.Result;
-                    result.transform.SetParent(root, true);
-                    
+                    obj.OwnerMono = result;
+                    obj.Parent?.WaitingMonos.AddLast(result);
+
                     yield return result;
                 }
                 else
@@ -52,14 +63,14 @@ namespace Game.Entities.Factories
             }
         }
 
-        private static Operation<SystemEntityMono> RawToMono(SystemEntity systemEntity)
+        private static Op<SystemEntityMono> RawToMono(SystemEntity systemEntity)
         {
             var type = systemEntity.GetType();
 
             if (_matchedFactories.ContainsKey(type))
-                return Operation<SystemEntityMono>.Correct(_matchedFactories[type].Invoke(systemEntity));
+                return Op<SystemEntityMono>.Correct(_matchedFactories[type].Invoke(systemEntity));
 
-            return Operation<SystemEntityMono>.Error($"No mono factory for {type.Name}");
+            return Op<SystemEntityMono>.Error($"No mono factory for {type.Name}");
         }
     }
 

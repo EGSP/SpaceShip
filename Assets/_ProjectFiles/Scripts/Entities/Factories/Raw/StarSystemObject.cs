@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Egsp.Core;
 using Egsp.Extensions.Collections;
-using Egsp.Extensions.Primitives;
 using JetBrains.Annotations;
 using Sirenix.Serialization;
 using UnityEngine;
@@ -45,7 +45,22 @@ namespace Game.Entities.Factories
 
         public bool IsValid => Id != -1;
 
+        /// <summary>
+        /// Моно объекты, ожидающие вызов родительского объекта.
+        /// Можно было бы создать отдельную структуру данных или написать алгоритм для поиска зависимостей.
+        /// Однако на данный момент просто представим что это функционал медиатора.
+        /// </summary>
+        [NonSerialized]
+        public readonly LinkedList<SystemEntityMono> WaitingMonos;
+        [NonSerialized]
+        public SystemEntityMono OwnerMono;
         
+
+        private StarSystemObject()
+        {
+            Line = new LinkedList<StarSystemObject>();
+            WaitingMonos = new LinkedList<SystemEntityMono>();
+        }
 
         public StarSystemObject(int id, [CanBeNull] SystemEntity entity) : this()
         {
@@ -55,9 +70,17 @@ namespace Game.Entities.Factories
             ResetEntityRelation();
         }
 
-        private StarSystemObject()
+        public Op NotifyWaitingMonos()
         {
-            Line = new LinkedList<StarSystemObject>();
+            if (OwnerMono == null)
+                return new Op($"OwnerMono is null for {Entity}");
+            
+            foreach (var waitingMono in WaitingMonos)
+            {
+                waitingMono.SetParent(OwnerMono);
+            }
+
+            return new Op(OperationResultType.Correct);
         }
 
         private void ResetEntityRelation()
@@ -79,16 +102,16 @@ namespace Game.Entities.Factories
             return Area;
         }
 
-        private float RecalculateAllAreas()
-        {
-            if (Line.Count == 0)
-            {
-                Area = this.GetSize();
-            }
-            
-            Area = this.GetSize() + Line.Sum(x => RecalculateArea());
-            return Area;
-        }
+        // private float RecalculateAllAreas()
+        // {
+        //     if (Line.Count == 0)
+        //     {
+        //         Area = this.GetSize();
+        //     } 
+        //     Вызвал бесконечный счетчик.
+        //     Area = this.GetSize() + Line.Sum(x => RecalculateArea());
+        //     return Area;
+        // }
 
         public void AddChild(StarSystemObject systemObject)
         {
@@ -102,28 +125,6 @@ namespace Game.Entities.Factories
         {
             Line.Join(line, x => x.Parent = this);
             RecalculateArea();
-        }
-
-        public static IEnumerable<StarSystemObject> QueueTraverse(StarSystemObject root)
-        {
-            var queue = new Queue<StarSystemObject>();
-            queue.Enqueue(root);
-            
-            while (queue.Count > 0)
-            {
-                var next = queue.Dequeue();
-                yield return next;
-                foreach (var child in next.Line)
-                    queue.Enqueue(child);
-            } 
-        }
-        
-        public static void QueueTraverse(StarSystemObject root, Action<StarSystemObject> action)
-        {
-            foreach (var systemObject in QueueTraverse(root))
-            {
-                action(systemObject);
-            } 
         }
         
         public static void CalculatePositions(StarSystemObject root, ref StarSystemObject previous)
@@ -159,6 +160,28 @@ namespace Game.Entities.Factories
             {
                 CalculatePositions(child, ref previous);
             }
+        }
+
+        public static IEnumerable<StarSystemObject> QueueTraverse(StarSystemObject root)
+        {
+            var queue = new Queue<StarSystemObject>();
+            queue.Enqueue(root);
+            
+            while (queue.Count > 0)
+            {
+                var next = queue.Dequeue();
+                yield return next;
+                foreach (var child in next.Line)
+                    queue.Enqueue(child);
+            } 
+        }
+        
+        public static void QueueTraverse(StarSystemObject root, Action<StarSystemObject> action)
+        {
+            foreach (var systemObject in QueueTraverse(root))
+            {
+                action(systemObject);
+            } 
         }
         
         public static IEnumerable<SystemEntity> QueueEntityTraverse(StarSystemObject root)
@@ -251,6 +274,14 @@ namespace Game.Entities.Factories
                 return StarSystemObject.QueueEntityTraverse(systemObject);
             
             return Array.Empty<SystemEntity>();
+        }
+
+        public static IEnumerable<StarSystemObject> GetObjects(this StarSystemObject systemObject)
+        {
+            if (systemObject.IsValid)
+                return StarSystemObject.QueueTraverse(systemObject);
+
+            return Array.Empty<StarSystemObject>();
         }
 
         public static byte[] Serialize(this StarSystemObject systemObject, DataFormat format = DataFormat.JSON)

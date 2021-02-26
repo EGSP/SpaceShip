@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace Game.Entities
 {
@@ -9,12 +10,20 @@ namespace Game.Entities
         public MeshFilter MeshFilter { get; protected set; }
         public MeshRenderer MeshRenderer{ get; protected set; }
         
-        public abstract SystemEntity SystemEntity { get; } 
+        [NotNull] public abstract SystemEntity SystemEntity { get; } 
+        
+        [CanBeNull] public SystemEntityMono Parent { get; private set; }
 
         protected virtual void Awake()
         {
             MeshFilter = GetComponent<MeshFilter>();
             MeshRenderer = GetComponent<MeshRenderer>();
+        }
+
+        public void SetParent(SystemEntityMono parent)
+        {
+            Parent = parent;
+            transform.SetParent(parent.transform, true);
         }
     }
 }

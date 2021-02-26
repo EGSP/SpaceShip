@@ -7,11 +7,11 @@ namespace Game
     public class TreeNode<TValue>
     {
         [NonSerialized]
-        public TreeNode<TValue> Parent;
+        [CanBeNull] public TreeNode<TValue> Parent;
         
-        public readonly LinkedList<TreeNode<TValue>> Childs;
+        [NotNull] public readonly LinkedList<TreeNode<TValue>> Childs;
 
-        public readonly TValue Value;
+        [NotNull] public readonly TValue Value;
 
         public TreeNode(TreeNode<TValue> parent,[NotNull] TValue value)
         {

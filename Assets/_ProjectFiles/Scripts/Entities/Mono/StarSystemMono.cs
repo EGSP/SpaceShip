@@ -10,9 +10,16 @@ namespace Game.Entities
 
         public List<SystemEntityMono> MonoEntities { get; set; } = new List<SystemEntityMono>();
 
+        public TreeNode<SystemEntityMono> EntityTree;
+
         public void Accept(StarSystem starSystem)
         {
             _starSystem = starSystem;
+        }
+
+        private void Update()
+        {
+            
         }
     }
 }
